@@ -1,0 +1,244 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.1.1",
+    "title": "KMD Logic Citizen Documents Service API"
+  },
+  "paths": {    
+    "/subscriptions/{subscriptionId}/citizen-documents/upload-document": {
+      "post": {
+        "tags": [
+          "CitizenDocumentProcess"
+        ],
+        "summary": "Uploads the single citizen document",
+        "operationId": "UploadAttachment",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "configurationId",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "cpr",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "retentionPeriodInDays",
+            "in": "formData",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "documentType",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "citizenDocument",
+              "digitalPostCoverLetter",
+              "snailMailCoverLetter"
+            ]
+          },
+          {
+            "name": "document",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The document is uploaded successfully",
+            "schema": {
+              "$ref": "#/definitions/CitizenDocumentUploadResponse"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "uniqueItems": false,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The request is unauthorized",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/subscriptions/{subscriptionId}/citizen-documents/send-documents": {
+      "post": {
+        "tags": [
+          "CitizenDocumentProcess"
+        ],
+        "summary": "Sends the documents to citizens",
+        "operationId": "SendDocument",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "sendCitizenDocumentRequest",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SendCitizenDocumentRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The document is sent successfully",
+            "schema": {
+              "$ref": "#/definitions/SendCitizenDocumentResponse"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "The request is not authorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "CitizenDocumentType": {
+      "enum": [
+        "citizenDocument",
+        "digitalPostCoverLetter",
+        "snailMailCoverLetter"
+      ],
+      "type": "string"
+    },
+    "CitizenDocumentUploadResponse": {
+      "type": "object",
+      "properties": {
+        "documentId": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "documentType": {
+          "$ref": "#/definitions/CitizenDocumentType"
+        },
+        "fileAccessPageUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "SendCitizenDocumentRequest": {
+      "type": "object",
+      "properties": {
+        "configurationId": {
+          "format": "uuid",
+          "description": "Citizen document config id",
+          "type": "string"
+        },
+        "sendingSystem": {
+          "description": "Name of the sending system",
+          "type": "string"
+        },
+        "cpr": {
+          "description": "Citizen CPR value",
+          "type": "string"
+        },
+        "documentType": {
+          "description": "Name of the predefined document type to be used for subsequent delivery",
+          "type": "string"
+        },
+        "citizenDocumentId": {
+          "format": "uuid",
+          "description": "Id of the original document to share with the citizen",
+          "type": "string"
+        },
+        "title": {
+          "description": "Title of the message",
+          "type": "string"
+        },
+        "digitalPostCoverLetterId": {
+          "format": "uuid",
+          "description": "Id of the digital post cover letter to share with the citizen",
+          "type": "string"
+        },
+        "snailMailCoverLetterId": {
+          "format": "uuid",
+          "description": "Id of the snail mail cover letter to share with the citizen",
+          "type": "string"
+        }
+      }
+    },
+    "SendCitizenDocumentResponse": {
+      "type": "object",
+      "properties": {
+        "messageId": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "name": "Authorization",
+      "in": "header",
+      "type": "apiKey",
+      "description": "Standard Authorization header using the Bearer scheme. <b>Example: \"bearer {token}\".</b> You can obtain that value from your browser Developer tools"
+    }
+  },
+  "tags": []
+}

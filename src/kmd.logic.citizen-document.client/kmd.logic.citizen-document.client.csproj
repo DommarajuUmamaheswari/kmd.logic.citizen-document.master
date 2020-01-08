@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" >
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RootNamespace>kmd.logic.citizen_document.client</RootNamespace>
+    <PackageId>kmd.logic.citizen_document.client</PackageId>
+    <Version>1.0.10</Version>
+    <Authors>KMD</Authors>
+    <Company>KMD_company</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <StartupObject />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kmd.Logic.Identity.Authorization" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>
